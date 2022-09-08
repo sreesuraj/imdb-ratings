@@ -4,7 +4,7 @@ namespace imdb_ratings.Models
 {
     public class GenreList
     {
-        public List<MovieGenreModel> Genre { get; set; }
+        public IEnumerable<MovieGenreModel> Genres { get; set; }
     }
 
     public class MovieGenreModel
