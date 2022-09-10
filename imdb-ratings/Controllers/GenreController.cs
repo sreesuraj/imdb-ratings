@@ -4,8 +4,7 @@ using System.Net;
 using imdb_ratings.Models;
 using Newtonsoft.Json;
 using System;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using System.Linq;
 
 namespace imdb_ratings.Controllers
 {
@@ -14,26 +13,22 @@ namespace imdb_ratings.Controllers
     public class GenreController : ControllerBase
     {
         // GET api/<GenreController>/5
-        [HttpGet("{language}")]
+        [HttpGet("movies/genres")]
         public List<string> Get(string language)
         {
-            List<string> movieList = new List<string>();
+            List<string> movieGenreList = new List<string>();
             using (WebClient web = new WebClient())
             {
                 string token = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhNmZmNGY1YzkzODVjNDZmMWU0YTVlNDM3NzM2YzcxNyIsInN1YiI6IjYzMTY1YTM5MzI2YzE5MDA3ZjJkMjQ4YSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.7pgrgqfgQwC4JdTIX1dajtXu7xslEnnPX3RZcmzhKy4";
                 string url = string.Format("https://api.themoviedb.org/3/genre/movie/list?language={0}", language);
                 web.Headers.Add("Authorization", "Bearer " + token);
                 string response = web.DownloadString(url);
-                //GenreList genreList = JsonSerializer.Deserialize<GenreList>(response);
                 GenreList genreList = JsonConvert.DeserializeObject<GenreList>(response);
 
-                var genre = genreList.Genres.GetEnumerator();
-                while (genre.MoveNext())
-                {
-                    movieList.Add(genre.Current.name);
-                }
+                var genre = genreList.Genres.ToList();
+                movieGenreList = genre.Select(x=>x.Name).ToList();
             }
-             return movieList;
+             return movieGenreList;
         }
     }
 
